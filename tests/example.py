@@ -14,7 +14,7 @@ my_menu = Menu(
             actions=[
                 MenuAction(lambda: print("Hello!")),
                 MenuAction(lambda: print("Hi!")),
-                MenuAction(lambda: print("HELLO NIGGA!"))
+                MenuAction(lambda: print("HELLO GAMER!"))
             ]
         ),
         MenuAction(
