@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Callable
 from menu_maker.bullet_types import *
 
+
 def iterate_over_with(options, bullets):
     size = len(options)
     bullets = iter(bullets.set_size(size))
@@ -13,13 +14,14 @@ def iterate_over_with(options, bullets):
     except (GeneratorExit, StopIteration):
         return
 
+
 class Menu:
     def __init__(
         self,
         options: list[str],
         actions: list[Menu | MenuAction],
         greeting: str = None,
-        bullets: BulletType = None
+        bullets: BulletType = None,
     ) -> None:
         if len(set(options)) != len(options):
             raise ValueError("Repeating bullets")
@@ -36,17 +38,24 @@ class Menu:
         if self.greeting:
             print(self.greeting)
         choice = input(
-            '\n'.join(f'{bullet}{")" if b else ""} -> {value}' for bullet, value in iterate_over_with(self.options, bullet)) +
-            '\nYour choice: '
+            "\n".join(
+                f'{bullet}{")" if b else ""} -> {value}'
+                for bullet, value in iterate_over_with(self.options, bullet)
+            )
+            + "\nYour choice: "
         )
         while choice not in bullet:
             print("Invalid!")
             choice = input(
-                '\n'.join(f'{bullet}{")" if b else ""} -> {value}' for bullet, value in iterate_over_with(self.options, bullet)) +
-                '\nYour choice: '
+                "\n".join(
+                    f'{bullet}{")" if b else ""} -> {value}'
+                    for bullet, value in iterate_over_with(self.options, bullet)
+                )
+                + "\nYour choice: "
             )
 
         self.actions[bullet.get_index_by_item(choice)].run()
+
 
 class MenuAction:
     def __init__(self, action: Callable, args=(), **kwargs):
@@ -56,4 +65,3 @@ class MenuAction:
 
     def run(self):
         return self.action(*self.args, **self.kwargs)
-

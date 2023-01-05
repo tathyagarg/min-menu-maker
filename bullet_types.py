@@ -1,11 +1,13 @@
 from enum import Enum
 
+
 def closest_power(base: int, of: int) -> int:
     n = 0
     while base > 1:
         n += 1
         base //= of
     return n
+
 
 class Bullets:
     def __init__(self, text: str, *, on_exhaust_columnize=True):
@@ -36,7 +38,7 @@ class Bullets:
     def check_overflow(self, power=None):
         power = power or self.power
         self.items = self.create_gen(power)
-        self.iter_text = f'self.create_gen({power})'
+        self.iter_text = f"self.create_gen({power})"
 
     @property
     def power(self):
@@ -49,7 +51,7 @@ class Bullets:
         return self
 
     def create_gen(self, width: int):
-        items = [0]*width
+        items = [0] * width
         while True:
             yield "".join(self.text[i] for i in items)
             items[-1] += 1
@@ -68,24 +70,25 @@ class Bullets:
                     index = ind
             if index == 0:
                 return ValueError("No text to proceed to!")
-            items[index-1] += 1
+            items[index - 1] += 1
             items[index] = 0
             items = self.check_overlap(items, max_size)
         return items
 
 
-
 class BulletType:
-    letters_lower = Bullets('abcdefghijklmnopqrstuvwxyz')
-    letters_upper = Bullets('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-    numbers_natural = Bullets('123456789')
-    numbers_whole = Bullets('0123456789')
+    letters_lower = Bullets("abcdefghijklmnopqrstuvwxyz")
+    letters_upper = Bullets("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    numbers_natural = Bullets("123456789")
+    numbers_whole = Bullets("0123456789")
+
 
 class BracketedBullets:
     letters_lower = BulletType.letters_lower
     letters_upper = BulletType.letters_upper
     numbers_natural = BulletType.numbers_natural
     numbers_whole = BulletType.numbers_whole
+
 
 class CustomBulletType(Bullets):
     def __init__(self, characters, *, on_exhaust_columnize=True):
