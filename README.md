@@ -83,6 +83,6 @@ my_menu.run(bullet=my_bullets)
  
 ## 📖 [License](https://github.com/Fenrir0279/min-menu-maker/blob/main/LICENSE.txt) 📖
 
-Copyright (c) 2022 Tathya Garg
+Copyright (c) 2022 Fenrir0279
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal ...
