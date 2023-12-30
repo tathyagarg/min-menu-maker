@@ -10,8 +10,8 @@
 ## ⬇ Installation ⬇
  Run **either** of the following command to install `min-menu-maker`
  ```
-    pip install git+https://github.com/Fenrir0279/min-menu-maker.git
-    python -m pip install git+https://github.com/Fenrir0279/min-menu-maker.git
+    pip install git+https://github.com/tathyagarg/min-menu-maker.git
+    python -m pip install git+https://github.com/tathyagarg/min-menu-maker.git
  ```
 
 ## ✅ Features ✅
