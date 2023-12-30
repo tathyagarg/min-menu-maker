@@ -2,7 +2,7 @@
 name = "min-menu-maker"
 version = "1.0.0"
 description = "Minimal menu maker for python"
-authors = ["tathya.garg@gmail.com"]
+authors = [{name="Tathya Garg", email="tathya.garg@gmail.com"}]
 
 [build-system]
 requires = ['setuptools>=65']
