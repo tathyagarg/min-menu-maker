@@ -1,95 +1,57 @@
-from enum import Enum
+class Radix:
+    def __init__(self, charset: str | list[str]) -> None:
+        self.charset = charset
+        self.length = len(charset)
 
-
-def closest_power(base: int, of: int) -> int:
-    n = 0
-    while base > 1:
-        n += 1
-        base //= of
-    return n
-
-
-class Bullets:
-    def __init__(self, text: str, *, on_exhaust_columnize=True):
-        self.text = text
-        self.iter_text = iter(self.text)
-        self.on_exhaust_columnize = on_exhaust_columnize
-        self.__curr = 0
-        self.__size = None
-
-        self.items = self.iter_text
+        self.string = self.charset[0]
+        self.int_representation = [0]
 
     def __iter__(self):
-        try:
-            while True:
-                yield next(self.items)
-        except (GeneratorExit, StopIteration):
-            self.check_overflow()
-
-    def get_index_by_item(self, item):
-        r = 0
-        for i, sitem in enumerate(self.items):
-            if sitem == item:
-                r = i
-                break
-        self.check_overflow()
-        return r
-
-    def check_overflow(self, power=None):
-        power = power or self.power
-        self.items = self.create_gen(power)
-        self.iter_text = f"self.create_gen({power})"
-
-    @property
-    def power(self):
-        return closest_power(self.__size, len(self.text))
-
-    def set_size(self, size: int):
-        self.__size = size
-        if self.power > 1:
-            self.check_overflow()
+        return self
+    
+    def __next__(self):
+        text = self.string
+        self.add()
+        return text
+    
+    def add(self):
+        if self.int_representation[-1] == self.length-1:
+            return self.carry_over()
+        return self.regular_add()
+    
+    def regular_add(self):
+        self.string = self.string[:-1] + self.charset[self.int_representation[-1]+1]
+        self.int_representation[-1] += 1
         return self
 
-    def create_gen(self, width: int):
-        items = [0] * width
-        while True:
-            yield "".join(self.text[i] for i in items)
-            items[-1] += 1
-            items = self.check_overlap(items)
-            if isinstance(items, Exception):
-                raise items
+    def carry_over(self):
+        carry_size = 0
+        for ch in self.int_representation[::-1]:
+            if ch == self.length-1: carry_size += 1
+            else: break
+        if carry_size == len(self.int_representation):
+            size = len(self.int_representation)
+            self.string = self.charset[0] * (size + 1)
+            self.int_representation = [0] * (size + 1)
+        else:
+            self.string = self.string[:-carry_size-1] + (self.charset[self.int_representation[-carry_size-1]+1]) + (self.charset[0] * carry_size)
+            self.int_representation = self.int_representation[:-carry_size-1] + [self.int_representation[-carry_size-1]+1] + ([0] * carry_size)
+        return self
 
-    def __contains__(self, item):
-        return item in self.text
+class Bullets:
+    def __init__(self, charset: str | list[str], ending_char: str, starting_index=0) -> None:
+        self.charset = charset
+        self.ending_char = ending_char
+        self.power = None
+        self.starting_index = starting_index
+        self.items = iter(charset)
 
-    def check_overlap(self, items: list[int], max_size: int = None) -> list[int]:
-        max_size = max_size or len(self.text)
-        if any(i >= max_size for i in items):
-            for ind, item in enumerate(items):
-                if item >= max_size:
-                    index = ind
-            if index == 0:
-                return ValueError("No text to proceed to!")
-            items[index - 1] += 1
-            items[index] = 0
-            items = self.check_overlap(items, max_size)
-        return items
-
-
-class BulletType:
-    letters_lower = Bullets("abcdefghijklmnopqrstuvwxyz")
-    letters_upper = Bullets("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-    numbers_natural = Bullets("123456789")
-    numbers_whole = Bullets("0123456789")
+    def get_next_char(self) -> str:
+        """
+            Format of yield: overflow_character + character + ending character
+            For example, with charset 'abc', ending character '.' and this being the 5th call, yield would be: 'ab.'
+        """
+        ...
 
 
-class BracketedBullets:
-    letters_lower = BulletType.letters_lower
-    letters_upper = BulletType.letters_upper
-    numbers_natural = BulletType.numbers_natural
-    numbers_whole = BulletType.numbers_whole
-
-
-class CustomBulletType(Bullets):
-    def __init__(self, characters, *, on_exhaust_columnize=True):
-        super().__init__(characters, on_exhaust_columnize=on_exhaust_columnize)
+# Predefined Bullets: TODO
