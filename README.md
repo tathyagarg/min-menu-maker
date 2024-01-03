@@ -27,48 +27,29 @@ py -m pip install --index-url https://test.pypi.org/simple/ --no-deps example-pa
 
 Here's a simple example for `min-menu-maker`
 
-[Source code](https://github.com/Fenrir0279/min-menu-maker/blob/main/tests/example.py) (comments added)
+[Source code](https://github.com/Fenrir0279/min-menu-maker/blob/main/tests.py)
 ```python
-from menu_maker.menus import Menu, MenuAction
-from menu_maker.bullet_types import CustomBulletType
+import bullets
+from menus import Menu, Choice
 
+def beans(pwd: int):
+    if pwd == 279: print("Beans")
+    else: print("Not beans")
 
-def big_action(text: str) -> None:
-    """
-    A lot of code can go here, to perform large pieces of code,
-    after the corrosponding menu option is selected
-    """
-    a = input(text)
-    print(f"You entered: {a}")
+menu = Menu([
+    Choice("Say hi but diff lang omg op",
+        Menu([
+            Choice("German", print, "Hallo"),
+            Choice("Russian", print, "Privyet"),
+            Choice("Latin", print, "Salve")
+        ], bullets.NUMERICAL())
+    ),
+    Choice("Say hello", print, "Hello!"),
+    Choice("Bean 12", beans, 12),
+    Choice("Bean 279", beans, 279),
+], bullets.Bullets('xy', '.'), "Choose!!!")
 
-
-my_menu = Menu(
-    # Your options and actions must corrospond with each other, 
-    # so the first item of options corrosponds with the first item of actions
-    options=["Say hi", "Say bye", "Ignore", "Big Action (Wow)!"],
-    actions=[
-        Menu(
-            options=["Hello!", "Hi!", "???"],
-            actions=[
-                MenuAction(lambda: print("Hello!")), # Menu actions take in functions (callables)
-                MenuAction(lambda: print("Hi!")),
-                MenuAction(lambda: print("HELLO GAMER!")),
-            ],
-        ),
-        MenuAction(action=(lambda: print("Bye!"))),
-        # You can specify positional arguments in the args parameter
-        # kwargs are passed in as though calling the target function
-        MenuAction(action=print, args=("I", "am", "ignoring", "you"), sep="_"),
-        MenuAction(big_action, args=("Write something: ",)),
-    ],
-    greeting="Welcome to my epic menu!",
-)
-
-# There are only 4 possible bullets. If there are more than 5 options,
-# The bullets will wrap, for example:
-# abab, abcd, abef, abgh, cdab, cdcd, cdef, cdgh, ...
-my_bullets = CustomBulletType(["ab", "cd", "ef", "gh"])
-my_menu.run(bullet=my_bullets)
+menu()
 ```
 
 ## ❓ Why `min-menu-maker` ❓
