@@ -1,67 +1,50 @@
-from __future__ import annotations
 from typing import Callable
-from menu_maker.bullet_types import *
+from bullets import Bullets
 
 
-def iterate_over_with(options, bullets):
-    size = len(options)
-    bullets = iter(bullets.set_size(size))
-    options = iter(options)
+class Choice:
+    def __init__(
+        self,
+        message: str,
+        action: Callable,
+        *args,
+        **kwargs
+    ) -> None:
+        self.message = message
+        self.action = action
+        self.args = args
+        self.kwargs = kwargs
 
-    try:
-        while True:
-            yield (i := next(bullets), next(options))
-    except (GeneratorExit, StopIteration):
-        return
+    def __call__(self):
+        return self.action(*self.args, **self.kwargs)
+
+    def __str__(self) -> str:
+        return self.message
 
 
 class Menu:
     def __init__(
         self,
-        options: list[str],
-        actions: list[Menu | MenuAction],
+        choices: list[Choice],
+        bulleting_type: Bullets,
         greeting: str = None,
-        bullets: BulletType = None,
+        **kwargs
     ) -> None:
-        if len(set(options)) != len(options):
-            raise ValueError("Repeating bullets")
-
-        self.options = options
-        self.actions = actions
         self.greeting = greeting
-        self.bullets = bullets
+        self.choices = choices
+        self.bulleting = bulleting_type
 
-    def run(self, *, bullet=None):
-        b = isinstance(bullet, BracketedBullets)
-        bullet = bullet or (self.bullets or BulletType.numbers_natural)
+        self.include_space = kwargs.get('include_space', True)
+        self.input_message = kwargs.get('input_message', '>>> ')
 
+    def __call__(self):
         if self.greeting:
             print(self.greeting)
-        choice = input(
-            "\n".join(
-                f'{bullet}{")" if b else ""} -> {value}'
-                for bullet, value in iterate_over_with(self.options, bullet)
-            )
-            + "\nYour choice: "
-        )
-        while choice not in bullet:
-            print("Invalid!")
-            choice = input(
-                "\n".join(
-                    f'{bullet}{")" if b else ""} -> {value}'
-                    for bullet, value in iterate_over_with(self.options, bullet)
-                )
-                + "\nYour choice: "
-            )
 
-        self.actions[bullet.get_index_by_item(choice)].run()
+        for bullet, choice in zip(self.bulleting, self.choices):
+            print(f"{bullet}{' ' if self.include_space else ''}{choice}")
+        choice = input(self.input_message)
+        index = self.bulleting.convert(choice)
+        print(index)
+        self.choices[index]()
 
-
-class MenuAction:
-    def __init__(self, action: Callable, args=(), **kwargs):
-        self.action = action
-        self.args = args
-        self.kwargs = kwargs
-
-    def run(self):
-        return self.action(*self.args, **self.kwargs)
