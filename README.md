@@ -5,6 +5,9 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 
+# Currently Unstable.
+Due to some issues, you cannot currently use `min-menu-maker` in your code. This file will be updated once the issue is resolved.
+
 ## Requirements
  - ![Python](https://cdn-icons-png.flaticon.com/16/5968/5968350.png) Python Version: 3.11 and up!
 
